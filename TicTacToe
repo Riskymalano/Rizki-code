@@ -1,0 +1,177 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+public class codetest {
+
+	static ArrayList<Integer> positionPlayer = new ArrayList<Integer>();
+	static ArrayList<Integer> positionCPU = new ArrayList<Integer>();
+
+	public static void main(String[] args) {
+		
+		System.out.println("Hello! Welcome to TicTacToe.");
+		System.out.println("The rule is you can only put position 1-9 and can't overwrite position that already filled!");
+
+		
+		char [][] gameBoard = {
+				{' ', '|', ' ', '|', ' '},
+				{'-', '+','-','+','-'},
+				{' ', '|',' ', '|',' '},
+				{'-', '+','-', '+','-'},
+				{' ', '|',' ', '|',' '},
+				};
+		
+		printgameBoard(gameBoard);
+		
+		
+		while (true) {
+		Scanner input = new Scanner (System.in);
+		System.out.print("Please enter your placement (1-9): ");
+	
+		if(input.hasNextInt()) {
+		int movePlayer = input.nextInt();
+			if(movePlayer > 9 || movePlayer < 1) {
+				System.out.print("you can only input a placement 1 - 9 ");
+
+			}else {
+				
+				while(positionPlayer.contains(movePlayer) || positionCPU.contains(movePlayer)){
+					System.out.print("Position is taken. Please enter another position: ");
+					
+					movePlayer = input.nextInt();
+				}
+						
+				placingPiece(gameBoard, movePlayer, "player");
+				String result = checkWinning();
+				if (result.length () >0) {
+					System.out.println(result);
+					break;
+					
+					
+				}
+				
+				Random rand = new Random ();
+				int moveCPU = rand.nextInt(9)+ 1;
+				while(positionPlayer.contains(moveCPU) || positionCPU.contains(moveCPU)){
+					moveCPU = rand.nextInt(9)+ 1;
+				}
+				placingPiece(gameBoard, moveCPU, "CPU");
+				
+				System.out.println();
+				printgameBoard(gameBoard);	
+			}
+		
+		}else {
+			System.out.print("you can only input a number ");
+			input.next();
+
+		}
+		
+		String result = checkWinning();
+		if (result.length () >0) {
+			System.out.println(result);
+			break;
+		}
+		System.out.println();
+		
+		}
+		System.out.println();
+		printgameBoard(gameBoard);
+
+
+	}
+	public static void printgameBoard (char gameBoard [][]) {
+		
+				for(char[] row : gameBoard) {
+					for(char c : row) {
+						System.out.print(c);
+					}
+					System.out.println();
+		
+	}
+
+}
+	public static void placingPiece (char [][] gameBoard, int move, String user ) {
+		
+		char symbol = ' ';
+		
+		if(user.equals("player")) {
+			symbol = 'X';
+			positionPlayer.add(move);
+		} else if (user.equals("CPU"))
+		{
+			symbol = 'O';
+			positionCPU.add(move);
+		}
+	
+				switch(move) {
+				case 1:
+					gameBoard[0][0] = symbol;
+					break;
+				case 2:
+					gameBoard[0][2] = symbol;
+					break;
+				case 3:
+					gameBoard[0][4] = symbol;
+					break;
+				case 4:
+					gameBoard[2][0] = symbol;
+					break;
+				case 5:
+					gameBoard[2][2] = symbol;
+					break;
+				case 6:
+					gameBoard[2][4] = symbol;
+					break;
+				case 7:
+					gameBoard[4][0] = symbol;
+					break;
+				case 8:
+					gameBoard[4][2] = symbol;
+					break;
+				case 9:
+					gameBoard[4][4] = symbol;
+					break;
+				}
+		
+		
+	}
+	public static String checkWinning() {
+		
+		List topRow = Arrays.asList(1, 2, 3);
+		List midRow = Arrays.asList(4, 5, 6);
+		List botRow =  Arrays.asList (7, 8 ,9);
+		List leftCol = Arrays.asList(1, 4, 7);
+		List midCol = Arrays.asList(2, 5, 8);
+		List rightCol = Arrays.asList(3, 6, 9);
+		List leftDig =  Arrays.asList(1, 5, 9);
+		List rightDig = Arrays.asList(3, 5, 7);
+		
+		List <List> winningRules = new ArrayList<List>();
+		winningRules.add(topRow);
+		winningRules.add(midRow);
+		winningRules.add(botRow);
+		winningRules.add(leftCol);
+		winningRules.add(rightCol);
+		winningRules.add(midCol);
+		winningRules.add(leftDig);
+		winningRules.add(rightDig);
+		
+		for (List l : winningRules) {
+			
+			if(positionPlayer.containsAll(l)) {
+				return "Congrats you won!";
+			}else if (positionCPU.containsAll(l)) {
+				return "Sorry you lost bro!";
+			}else if (positionPlayer.size() + positionCPU.size() == 9) {
+				return "DRAW!";
+			}
+			
+		}
+		
+		return "";
+	} 
+
+}
